@@ -84,8 +84,6 @@ Vagrant.configure("2") do |config|
      hostnamectl set-hostname allinone-mh.localhost
      
      #Service configuration block
-     systemctl enable --now postfix 
-     systemctl enable --now dovecot
      systemctl enable --now cockpit.socket
      systemctl enable --now saslauthd.service
      # User configuration block
@@ -98,4 +96,9 @@ Vagrant.configure("2") do |config|
      
    SHELL
    config.vm.provision "shell", path: "configure_mail_server.sh"
+   config.vm.provision "shell", inline: <<-SHELL
+    chmod 0600 /var/mail/*
+    systemctl enable --now postfix 
+    systemctl enable --now dovecot
+   SHELL
 end
