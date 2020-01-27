@@ -8,3 +8,6 @@ sed -i "\$a# Custom added options\nsmtpd_sasl_auth_enable = yes" /etc/postfix/ma
 
 # Setting up mbox path
 sed -i "/mail_location\ =\ mbox:~\/mail:INBOX=\/var\/mail\/%u/s/^#//" /etc/dovecot/conf.d/10-mail.conf 
+
+# Removing manager from alias list
+sed -i '/^manager/d' /etc/aliases && newaliases
