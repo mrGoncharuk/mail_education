@@ -41,6 +41,9 @@ Vagrant.configure("2") do |config|
   # For POP3
   config.vm.network "forwarded_port", guest: 110, host: 1110
 
+  # For Apache
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
   # For submission
   config.vm.network "forwarded_port", guest: 587, host: 1587
 
@@ -82,9 +85,131 @@ Vagrant.configure("2") do |config|
      yum -y install cyrus-sasl cyrus-sasl-plain
      yum -y install pdns pdns-recursor
      yum -y install bind-utils
+     # Dependencies for web-morda
+     # Installing Apache
+     yum -y install httpd
+     # Install PHP
+     yum -y install php-fpm.x86_64
+     # Installing mysql and mysql server
+     yum -y install mysql mysql-server
+     # Downloading RoundCube
+     wget https://github.com/roundcube/roundcubemail/releases/download/1.4.2/roundcubemail-1.4.2-complete.tar.gz
+     # Extracting RoundCube to /var/www
+     tar -xf roundcubemail-1.4.2-complete.tar.gz -C /var/www
+     # Renaming RoundCube Directory
+     mv /var/www/roundcubemail-1.4.2 /var/www/roundcube
+     # Installing package repository
+     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+     # Reset PHP module streams.
+     dnf -y module reset php
+     # Enable the php:remi-7.4 module stream.
+     dnf -y module enable php:remi-7.4
+     # Install PHP modules required or recommended by Roundcube.
+     dnf -y install php-ldap php-imagick php-common php-gd php-imap php-json php-curl php-zip php-xml php-mbstring php-bz2 php-intl php-gmp
+     
      # OS configuration block
      hostnamectl set-hostname allinone-mh.localhost
-     
+
+     systemctl start httpd
+     # Create a MySQL Database and User for Roundcube
+     systemctl start mysqld
+     mysql -u root --execute="CREATE DATABASE roundcube DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
+     mysql -u root --execute="CREATE USER roundcubeuser@localhost IDENTIFIED BY 'password';"
+     mysql -u root --execute="GRANT ALL PRIVILEGES ON roundcube.* TO roundcubeuser@localhost;"
+     mysql -u root --execute="flush privileges;"
+     mysql -u root roundcube < /var/www/roundcube/SQL/mysql.initial.sql
+
+     # Create Apache Virtual Host Config File for Roundcube
+     cat > /etc/httpd/conf.d/roundcube.conf << EOF
+<VirtualHost *:80>
+  ServerName 127.0.0.1
+  DocumentRoot /var/www/roundcube/
+
+  ErrorLog /var/log/httpd/roundcube_error.log
+  CustomLog /var/log/httpd/roundcube_access.log combined
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride All
+  </Directory>
+
+  <Directory /var/www/roundcube/>
+    Options FollowSymLinks MultiViews
+    AllowOverride All
+    Order allow,deny
+    allow from all
+  </Directory>
+
+</VirtualHost>
+EOF
+     # PHP-MySQL extension
+     yum -y install php-mysql
+     # SE Linux permission configuration
+     chcon -t httpd_sys_content_t /var/www/roundcube/ -R
+     chcon -t httpd_sys_rw_content_t /var/www/roundcube/temp/ /var/www/roundcube/logs/ -R
+     setfacl -R -m u:apache:rwx /var/www/roundcube/temp/ /var/www/roundcube/logs/
+     setsebool -P httpd_can_network_connect 1
+     cat > /var/www/roundcube/config/config.inc.php << EOF
+<?php
+
+/* Local configuration for Roundcube Webmail */
+
+// ----------------------------------
+// SQL DATABASE
+// ----------------------------------
+// Database connection string (DSN) for read+write operations
+// Format (compatible with PEAR MDB2): db_provider://user:password@host/database
+// Currently supported db_providers: mysql, pgsql, sqlite, mssql, sqlsrv, oracle
+// For examples see http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php
+// Note: for SQLite use absolute path (Linux): 'sqlite:////full/path/to/sqlite.db?mode=0646'
+//       or (Windows): 'sqlite:///C:/full/path/to/sqlite.db'
+// Note: Various drivers support various additional arguments for connection,
+//       for Mysql: key, cipher, cert, capath, ca, verify_server_cert,
+//       for Postgres: application_name, sslmode, sslcert, sslkey, sslrootcert, sslcrl, sslcompression, service.
+//       e.g. 'mysql://roundcube:@localhost/roundcubemail?verify_server_cert=false'
+$config['db_dsnw'] = 'mysql://roundcubeuser:password@localhost/roundcube';
+
+// ----------------------------------
+// IMAP
+// ----------------------------------
+// The IMAP host chosen to perform the log-in.
+// Leave blank to show a textbox at login, give a list of hosts
+// to display a pulldown menu or set one host as string.
+// Enter hostname with prefix ssl:// to use Implicit TLS, or use
+// prefix tls:// to use STARTTLS.
+// Supported replacement variables:
+// %n - hostname ($_SERVER['SERVER_NAME'])
+// %t - hostname without the first part
+// %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
+// %s - domain name after the '@' from e-mail address provided at login screen
+// For example %n = mail.domain.tld, %t = domain.tld
+// WARNING: After hostname change update of mail_host column in users table is
+//          required to match old user data records with the new host.
+$config['default_host'] = 'localhost';
+
+// SMTP port. Use 25 for cleartext, 465 for Implicit TLS, or 587 for STARTTLS (default)
+$config['smtp_port'] = 25;
+
+// provide an URL where a user can get support for this Roundcube installation
+// PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
+$config['support_url'] = '';
+
+// This key is used for encrypting purposes, like storing of imap password
+// in the session. For historical reasons it's called DES_key, but it's used
+// with any configured cipher_method (see below).
+$config['des_key'] = 'bmvFmezqIpUEbO4NOGnyVC08';
+
+// Name your service. This is displayed on the login screen and in the window title
+$config['product_name'] = 'Roundcube MH';
+
+// ----------------------------------
+// PLUGINS
+// ----------------------------------
+// List of active plugins (in plugins/ directory)
+$config['plugins'] = array();
+
+EOF
+
      #Service configuration block
      systemctl enable --now cockpit.socket
      systemctl enable --now saslauthd.service
@@ -105,5 +230,9 @@ Vagrant.configure("2") do |config|
     systemctl enable --now dovecot
     systemctl enable --now pdns-recursor
     systemctl enable --now pdns
+    systemctl stop mysqld && systemctl enable --now mysqld
+    systemctl stop httpd && systemctl enable --now httpd
+    systemctl enable --now php-fpm.service
+    mv /var/www/roundcube/installer /tmp
    SHELL
 end
