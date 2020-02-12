@@ -149,6 +149,8 @@ EOF
      chcon -t httpd_sys_rw_content_t /var/www/roundcube/temp/ /var/www/roundcube/logs/ -R
      setfacl -R -m u:apache:rwx /var/www/roundcube/temp/ /var/www/roundcube/logs/
      setsebool -P httpd_can_network_connect 1
+     
+     
      cat > /var/www/roundcube/config/config.inc.php << EOF
 <?php
 
@@ -167,7 +169,7 @@ EOF
 //       for Mysql: key, cipher, cert, capath, ca, verify_server_cert,
 //       for Postgres: application_name, sslmode, sslcert, sslkey, sslrootcert, sslcrl, sslcompression, service.
 //       e.g. 'mysql://roundcube:@localhost/roundcubemail?verify_server_cert=false'
-$config['db_dsnw'] = 'mysql://roundcubeuser:password@localhost/roundcube';
+\\$config['db_dsnw'] = 'mysql://roundcubeuser:password@localhost/roundcube';
 
 // ----------------------------------
 // IMAP
@@ -185,28 +187,28 @@ $config['db_dsnw'] = 'mysql://roundcubeuser:password@localhost/roundcube';
 // For example %n = mail.domain.tld, %t = domain.tld
 // WARNING: After hostname change update of mail_host column in users table is
 //          required to match old user data records with the new host.
-$config['default_host'] = 'localhost';
+\\$config['default_host'] = 'localhost';
 
 // SMTP port. Use 25 for cleartext, 465 for Implicit TLS, or 587 for STARTTLS (default)
-$config['smtp_port'] = 25;
+\\$config['smtp_port'] = 25;
 
 // provide an URL where a user can get support for this Roundcube installation
 // PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
-$config['support_url'] = '';
+\\$config['support_url'] = '';
 
 // This key is used for encrypting purposes, like storing of imap password
 // in the session. For historical reasons it's called DES_key, but it's used
 // with any configured cipher_method (see below).
-$config['des_key'] = 'bmvFmezqIpUEbO4NOGnyVC08';
+\\$config['des_key'] = 'bmvFmezqIpUEbO4NOGnyVC08';
 
 // Name your service. This is displayed on the login screen and in the window title
-$config['product_name'] = 'Roundcube MH';
+\\$config['product_name'] = 'Roundcube MH';
 
 // ----------------------------------
 // PLUGINS
 // ----------------------------------
 // List of active plugins (in plugins/ directory)
-$config['plugins'] = array();
+\\$config['plugins'] = array();
 
 EOF
 
@@ -223,8 +225,8 @@ EOF
      usermod -p '$6$xyz$tlQI91A01E6TWfFL6jqBSSLdzLKJtFyF2aWfdTZyOBUn56UjQbMyecGla5IMGqX./neusxkBsr3IwUGZhTnel0' contractor
      
    SHELL
-   config.vm.provision "shell", path: "configure_mail_server.sh"
-   config.vm.provision "shell", inline: <<-SHELL
+   config.vm.provision "run_config_script", path: "configure_mail_server.sh"
+   config.vm.provision "services_start", inline: <<-SHELL
     chmod 0600 /var/mail/*
     systemctl enable --now postfix 
     systemctl enable --now dovecot
