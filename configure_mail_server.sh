@@ -30,3 +30,7 @@ cp /vagrant/config_files/youdidnotevenimaginethisdomainexists.com.db /var/lib/pd
 # Configuring forward-zones
 sed -i '/forward-zones=/s/^# //' /etc/pdns-recursor/recursor.conf 
 sed -i 's/^\(forward-zones\s*=\s*\).*$/\1youdidnotevenimaginethisdomainexists.com=127.0.0.1:54/' /etc/pdns-recursor/recursor.conf
+
+# Setting up Timezone for PHP
+sed -i '/date.timezone =/s/^;//' /etc/php.ini
+sed -i "s/^\(date.timezone\s*=\s*\).*$/\1 'UTC'/" /etc/php.ini

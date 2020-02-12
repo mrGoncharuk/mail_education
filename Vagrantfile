@@ -209,7 +209,7 @@ EOF
 // ----------------------------------
 // List of active plugins (in plugins/ directory)
 \\$config['plugins'] = array();
-
+\\$config['enable_installer'] = true;
 EOF
 
      #Service configuration block
@@ -225,8 +225,8 @@ EOF
      usermod -p '$6$xyz$tlQI91A01E6TWfFL6jqBSSLdzLKJtFyF2aWfdTZyOBUn56UjQbMyecGla5IMGqX./neusxkBsr3IwUGZhTnel0' contractor
      
    SHELL
-   config.vm.provision "run_config_script", path: "configure_mail_server.sh"
-   config.vm.provision "services_start", inline: <<-SHELL
+   config.vm.provision "run_config_script", type: "shell", path: "configure_mail_server.sh"
+   config.vm.provision "services_start", type: "shell", inline: <<-SHELL
     chmod 0600 /var/mail/*
     systemctl enable --now postfix 
     systemctl enable --now dovecot
@@ -234,7 +234,7 @@ EOF
     systemctl enable --now pdns
     systemctl stop mysqld && systemctl enable --now mysqld
     systemctl stop httpd && systemctl enable --now httpd
-    systemctl enable --now php-fpm.service
-    mv /var/www/roundcube/installer /tmp
+    systemctl stop php-fpm && systemctl enable --now php-fpm
+
    SHELL
 end
