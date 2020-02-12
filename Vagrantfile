@@ -210,6 +210,7 @@ EOF
 // List of active plugins (in plugins/ directory)
 \\$config['plugins'] = array();
 \\$config['enable_installer'] = true;
+?>
 EOF
 
      #Service configuration block
