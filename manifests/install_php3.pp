@@ -6,12 +6,12 @@ package { "https://rpms.remirepo.net/enterprise/remi-release-8.rpm":
     ensure   => 'present',
 }
 
-#package { 'module reset php':
- #   ensure   => 'present',
-#}
+exec { 'module reset php':
+    command  => '/usr/bin/dnf -y module reset php',
+}
 
-yumrepo { "php:remi-7.4":
-    enabled  => true,
+exec { 'module enable eset php':
+    command  => '/usr/bin/dnf -y module enable php:remi-7.4',
 }
 
 
