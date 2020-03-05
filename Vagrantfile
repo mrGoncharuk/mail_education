@@ -87,16 +87,14 @@ Vagrant.configure("2") do |config|
   config.vm.provision "puppet install", type: "shell", inline: <<-SHELL
     dnf -y install https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm
     yum -y install puppet
-    puppet module install puppet-archive
+	/opt/puppetlabs/bin/puppet module install puppet-archive
   SHELL
-  Vagrant.configure("2") do |config|
-    config.vm.provision "puppet" do |puppet|
+  config.vm.provision "puppet install pkgs", type: "puppet" do |puppet|
       puppet.manifests_path = "manifests"
       puppet.manifest_file = "install_packages1.pp"
-    end
-    config.vm.provision "puppet" do |puppet|
+  end
+  config.vm.provision "puppet roundcube install", type: "puppet" do |puppet|
       puppet.manifests_path = "manifests"
       puppet.manifest_file = "install_rc2.pp"
-    end
   end
 end

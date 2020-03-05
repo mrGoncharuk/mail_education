@@ -16,20 +16,26 @@ define roundcube_conf (
     AllowOverride All
   </Directory>
 
-  <Directory /var/www/roundcube String $serve
+  <Directory /var/www/roundcube/>
     allow from all
   </Directory>
 
 </VirtualHost>
 "
 
-    file { '/tmp/roundcube.conf':
+    file { '/etc/httpd/conf.d/roundcube.conf':
       content => $str,
+      notify => Service['httpd'],
     }
+
+    service {'httpd':
+     ensure => running,
+     enable => true,
+   }
 }
 
-$servername = '127.0.3e120.1'
-$virtualhost = '*:801231'
+$virtualhost=undef
+$servername=undef
 roundcube_conf {"creates config for roundcube":
     virtualhost => $virtualhost,
     servername  => $servername,
