@@ -87,7 +87,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "puppet install", type: "shell", inline: <<-SHELL
     dnf -y install https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm
     yum -y install puppet
-	/opt/puppetlabs/bin/puppet module install puppet-archive
+	  /opt/puppetlabs/bin/puppet module install puppet-archive
   SHELL
   config.vm.provision "puppet install pkgs", type: "puppet" do |puppet|
       puppet.manifests_path = "manifests"
@@ -97,4 +97,27 @@ Vagrant.configure("2") do |config|
       puppet.manifests_path = "manifests"
       puppet.manifest_file = "install_rc2.pp"
   end
+  config.vm.provision "puppet php-modules install", type: "puppet" do |puppet|
+      puppet.manifests_path = "manifests"
+      puppet.manifest_file = "install_php3.pp"
+  end
+  config.vm.provision "puppet hostname change", type: "puppet" do |puppet|
+      puppet.manifests_path = "manifests"
+      puppet.manifest_file = "change_hostname4.pp"
+  end
+  config.vm.provision "shell mysql configuration", type: "shell", inline: <<-SHELL
+      systemctl start httpd
+      # Create a MySQL Database and User for Roundcube
+      systemctl start mysqld
+      mysql -u root --execute="CREATE DATABASE roundcube DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
+      mysql -u root --execute="CREATE USER roundcubeuser@localhost IDENTIFIED BY 'password';"
+      mysql -u root --execute="GRANT ALL PRIVILEGES ON roundcube.* TO roundcubeuser@localhost;"
+      mysql -u root --execute="flush privileges;"
+      mysql -u root roundcube < /var/www/roundcube/SQL/mysql.initial.sql
+  SHELL
+  config.vm.provision "puppet creates Rouncube's config file", type: "puppet" do |puppet|
+      puppet.manifests_path = "manifests"
+      puppet.manifest_file = "create_roundcube_conf_file6.pp"
+  end
+
 end
