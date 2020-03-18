@@ -1,13 +1,41 @@
     # PHP-MySQL extension
-# yum -y install php-mysql
-    # SE Linux permission configuration
-# chcon -t httpd_sys_content_t /var/www/roundcube/ -R
-# chcon -t httpd_sys_rw_content_t /var/www/roundcube/temp/ /var/www/roundcube/logs/ -R
-# setfacl -R -m u:apache:rwx /var/www/roundcube/temp/ /var/www/roundcube/logs/
-# setsebool -P httpd_can_network_connect 1
-
+# yum -y install php-mysql      //TODO: ensure installing
 package { "php-mysql":
    ensure => 'installed',
 }
+    # SE Linux permission configuration
+# chcon -t httpd_sys_content_t /var/www/roundcube/ -R
 
+file { "/var/www/roundcube/":
+    ensure  => directory,
+    recurse => true,
+    seltype => "httpd_sys_content_t",
+}
+
+# chcon -t httpd_sys_rw_content_t /var/www/roundcube/temp/ /var/www/roundcube/logs/ -R
+file { "/var/www/roundcube/temp/":
+    ensure  => directory,
+    recurse => true,
+    seltype => "httpd_sys_rw_content_t",
+}
+
+file { "/var/www/roundcube/logs/":
+    ensure  => directory,
+    recurse => true,
+    seltype => "httpd_sys_rw_content_t",
+}
+
+
+# setfacl -R -m u:apache:rwx /var/www/roundcube/temp/ /var/www/roundcube/logs/
+exec { "setfacl apache":
+    command => "/usr/bin/setfacl -R -m u:apache:rwx /var/www/roundcube/temp/ /var/www/roundcube/logs/",
+}
+
+
+# setsebool -P httpd_can_network_connect 1
+
+selboolean { 'setting up httpd_can_network_connect to true':
+  name       => "httpd_can_network_connect",
+  value      => 'on',
+}
 
