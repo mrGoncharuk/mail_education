@@ -213,9 +213,7 @@ EOF
 ?>
 EOF
 
-     #Service configuration block
-     systemctl enable --now cockpit.socket
-     systemctl enable --now saslauthd.service
+
 
      # User configuration block
      useradd engineer 
@@ -229,6 +227,9 @@ EOF
    config.vm.provision "run_config_script", type: "shell", path: "configure_mail_server.sh"
    config.vm.provision "services_start", type: "shell", inline: <<-SHELL
     chmod 0600 /var/mail/*
+    #Service configuration block
+    systemctl enable --now cockpit.socket
+    systemctl enable --now saslauthd.service
     systemctl enable --now postfix 
     systemctl enable --now dovecot
     systemctl enable --now pdns-recursor

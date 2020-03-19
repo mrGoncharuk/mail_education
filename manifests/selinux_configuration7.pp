@@ -1,8 +1,6 @@
     # PHP-MySQL extension
 # yum -y install php-mysql      //TODO: ensure installing
-package { "php-mysql":
-   ensure => 'installed',
-}
+
     # SE Linux permission configuration
 # chcon -t httpd_sys_content_t /var/www/roundcube/ -R
 

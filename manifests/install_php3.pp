@@ -19,4 +19,6 @@ package { $package_php:
     ensure   => 'installed',
 }
 
-
+package { "php-mysql":
+   ensure => 'installed',
+}
