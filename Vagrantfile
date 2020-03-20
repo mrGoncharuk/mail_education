@@ -129,17 +129,8 @@ Vagrant.configure("2") do |config|
       puppet.manifests_path = "manifests"
       puppet.manifest_file = "config_update10.pp"
   end
-  config.vm.provision "services_start", type: "shell", inline: <<-SHELL
-    chmod 0600 /var/mail/*
-    #Service configuration block
-    systemctl enable --now cockpit.socket
-    systemctl enable --now saslauthd.service
-    systemctl enable --now postfix 
-    systemctl enable --now dovecot
-    systemctl enable --now pdns-recursor
-    systemctl enable --now pdns
-    systemctl stop mysqld && systemctl enable --now mysqld
-    systemctl stop httpd && systemctl enable --now httpd
-    systemctl stop php-fpm && systemctl enable --now php-fpm
-   SHELL
+  config.vm.provision "puppet start and enable services", type: "puppet" do |puppet|
+      puppet.manifests_path = "manifests"
+      puppet.manifest_file = "services_starting11.pp"
+  end
 end
