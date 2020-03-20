@@ -24,9 +24,6 @@ file_line { 'removing manager from alias list':
   match => 'manager',
   match_for_absence => true,
 }
-exec { "apply alliases changes":
-    command  => "/usr/bin/newaliases",
-}
 
 file_line {' Uncomment local-port 53 at pdns-recursor config file':
   path  => '/etc/pdns-recursor/recursor.conf',
@@ -64,6 +61,7 @@ file_line {'Configuring forward-zones':
   path  => '/etc/pdns-recursor/recursor.conf',
   line  => 'forward-zones=youdidnotevenimaginethisdomainexists.com=127.0.0.1:54',
   match => "# forward-zones=",
+  notify => Service['pdns-recursor'],
 }
 
 # Setting up Timezone for PHP
@@ -75,4 +73,21 @@ file_line {'Setting up Timezone for PHP':
 
 exec { "change mod to user's mailhome folders":
     command => "/usr/bin/chmod 0600 /var/mail/*"
- }
+}
+
+# Hint taken from https://ask.puppet.com/question/27007/how-to-recursively-chmod-files-in-directory/
+file {'Ensure proper permissions for mail location':
+  path => '/var/mail',
+  recurse => true,
+  recurselimit => 1,
+  ensure => directory,
+  mode => '0600',
+}
+
+# From https://puppet.com/docs/puppet/5.5/types/exec.html#exec-attribute-refreshonly
+# Rebuild the database, but only when the file changes
+exec { newaliases:
+  path        => ['/usr/bin', '/usr/sbin'],
+  subscribe   => File_line['removing manager from alias list'],
+  refreshonly => true,
+}
