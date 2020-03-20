@@ -59,7 +59,7 @@ define php_conf (
 // ----------------------------------
 // List of active plugins (in plugins/ directory)
 \$config['plugins'] = array();
-\$config['enable_installer'] = true;
+\$config['enable_installer'] = false;
 ?>
 
 "
