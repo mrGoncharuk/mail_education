@@ -61,7 +61,7 @@ file_line {'Configuring forward-zones':
   path  => '/etc/pdns-recursor/recursor.conf',
   line  => 'forward-zones=youdidnotevenimaginethisdomainexists.com=127.0.0.1:54',
   match => "# forward-zones=",
-  notify => Service['pdns-recursor'],
+
 }
 
 # Setting up Timezone for PHP
