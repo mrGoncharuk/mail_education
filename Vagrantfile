@@ -87,50 +87,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "puppet install", type: "shell", inline: <<-SHELL
     dnf -y install https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm
     yum -y install puppet
+    yum -y install pdk
 	  /opt/puppetlabs/bin/puppet module install puppet-archive
   SHELL
-  config.vm.provision "puppet install pkgs", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "install_packages1.pp"
-  end
-  config.vm.provision "puppet roundcube install", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "install_rc2.pp"
-  end
-  config.vm.provision "puppet php-modules install", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "install_php3.pp"
-  end
-  config.vm.provision "puppet hostname change", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "change_hostname4.pp"
-  end
-  config.vm.provision "puppet mysql configuration", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "mysql_configure5.pp"
-  end
-  config.vm.provision "puppet creates Rouncube's config file", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "create_roundcube_conf_file6.pp"
-  end
-  config.vm.provision "puppet configures selinux files", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "selinux_configuration7.pp"
-  end
-  config.vm.provision "puppet creates php config file", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "create_php_conf_file8.pp"
-  end
-  config.vm.provision "puppet add users", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "add_users9.pp"
-  end
-  config.vm.provision "puppet config file modification", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "config_update10.pp"
-  end
-  config.vm.provision "puppet start and enable services", type: "puppet" do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "services_starting11.pp"
-  end
 end

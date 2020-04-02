@@ -1,9 +1,5 @@
-define php_conf (
-) {
-    $str = 
-"
 <?php
-
+  
 /* Local configuration for Roundcube Webmail */
 
 // ----------------------------------
@@ -38,7 +34,7 @@ define php_conf (
 // WARNING: After hostname change update of mail_host column in users table is
 //          required to match old user data records with the new host.
 \$config['default_host'] = 'localhost';
-
+$test_var
 // SMTP port. Use 25 for cleartext, 465 for Implicit TLS, or 587 for STARTTLS (default)
 \$config['smtp_port'] = 25;
 
@@ -63,18 +59,3 @@ define php_conf (
 ?>
 
 "
-
-    file { '/var/www/roundcube/config/config.inc.php':
-      content => $str,
-      notify => Service['httpd'],
-    }
-    service {'httpd':
-     ensure => running,
-     enable => true,
-   }
-}
-
-
-php_conf {"creates config file for php":
-
-}

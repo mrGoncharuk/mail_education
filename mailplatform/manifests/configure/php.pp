@@ -1,8 +1,13 @@
-define php_conf (
-) {
-    $str = 
-"
-<?php
+# @summary A short summary of the purpose of this class
+#
+# A description of what this class does
+#
+# @example
+#   include mailplatform::configure::php
+class mailplatform::configure::php {
+  $php_timezone = 'UTC'
+  #"creates config file for php":
+  $str = "<?php
 
 /* Local configuration for Roundcube Webmail */
 
@@ -62,19 +67,19 @@ define php_conf (
 \$config['enable_installer'] = false;
 ?>
 
-"
-
-    file { '/var/www/roundcube/config/config.inc.php':
-      content => $str,
-      notify => Service['httpd'],
-    }
-    service {'httpd':
-     ensure => running,
-     enable => true,
-   }
-}
-
-
-php_conf {"creates config file for php":
-
+  "
+  file { '/var/www/roundcube/config/config.inc.php':
+    content => $str,
+    notify  => Service['httpd'],
+  }
+  service {'httpd':
+    ensure => running,
+    enable => true,
+  }
+  # Setting up Timezone for PHP
+  file_line {'Setting up Timezone for PHP':
+    path  => '/etc/php.ini',
+    line  => "date.timezone = ${php_timezone}",
+    match => ';date.timezone =',
+  }
 }
