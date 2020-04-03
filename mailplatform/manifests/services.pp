@@ -5,12 +5,23 @@
 # @example
 #   include mailplatform::services
 class mailplatform::services {
-  $my_servises = ['cockpit.socket', 'saslauthd.service', 'postfix', 'dovecot',
-  'pdns-recursor', 'pdns', 'mysqld', 'httpd', 'php-fpm']
 
-  service { 'Running all services':
-    ensure => running,
-    enable => true,
-    name   => $my_servises,
+
+  define restart_service_array (
+    Array[String] $service_array,
+  ) {
+    $service_array.each |String $curr_service| {
+      service { "Starting ${curr_service}":
+        restart => true,
+        name   => $curr_service,
+      }
+    }
   }
+
+  $my_servises = ['cockpit.socket', 'saslauthd.service', 'postfix', 'dovecot',
+  'pdns-recursor', 'pdns', 'php-fpm'] #'mysqld', 'httpd',
+  mailplatform::services::restart_service_array {'Running all services':
+    service_array => $my_servises,
+  }
+
 }

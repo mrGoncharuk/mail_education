@@ -13,7 +13,7 @@ class mailplatform::configure::aliases {
   }
   exec { 'newaliases':
     path        => ['/usr/bin', '/usr/sbin'],
-    subscribe   => File_line['removing manager from alias list'],
+    require     => File_line['removing manager from alias list'],
     refreshonly => true,
 #    require           => File_line['removing manager from alias list'],
   }

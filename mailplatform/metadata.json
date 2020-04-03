@@ -4,7 +4,9 @@
   "author": "alexanderyegorov",
   "summary": "Roundcube and supporting email system installation",
   "license": "proprietary",
-  "source": "",
+  "source": "y",
+  "project_page": "y",
+  "issues_url": "y",
   "dependencies": [
 
   ],

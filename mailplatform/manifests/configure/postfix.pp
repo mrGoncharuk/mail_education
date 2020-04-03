@@ -13,6 +13,6 @@ class mailplatform::configure::postfix {
   }
   file_line {'Enabling sasl authentication':
     path => '/etc/postfix/main.cf',
-    line => '\n# Custom added options\nsmtpd_sasl_auth_enable = yes',
+    line => "\n# Custom added options\nsmtpd_sasl_auth_enable = yes",
   }
 }
