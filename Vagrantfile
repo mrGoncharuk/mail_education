@@ -41,6 +41,9 @@ Vagrant.configure("2") do |config|
   # For POP3
   config.vm.network "forwarded_port", guest: 110, host: 1110
 
+  # For Apache
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
   # For submission
   config.vm.network "forwarded_port", guest: 587, host: 1587
 
@@ -59,6 +62,10 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.provider "virtualbox" do |v|  
+    v.customize ["modifyvm", :id, "--cpus", 2]
+    v.customize ["modifyvm", :id, "--memory", 4096]
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -75,30 +82,16 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-   config.vm.provision "shell", inline: <<-SHELL
-     # Installation block
-     yum install -y epel-release
-     yum install -y vim cockpit bash-completion postfix dovecot telnet nc
-     yum -y install cyrus-sasl cyrus-sasl-plain
-     # OS configuration block
-     hostnamectl set-hostname allinone-mh.localhost
-     
-     #Service configuration block
-     systemctl enable --now cockpit.socket
-     systemctl enable --now saslauthd.service
-     # User configuration block
-     useradd engineer 
-     usermod -p '$6$xyz$.UccqMWqX8VK4PRzmKTR1woU2y5IgDas9n.XPkhgK8M62yVqI4sLx.Yw2AC5z7t4Ke3NiU7aq7i3Su5QdrRcF1' engineer
-     useradd manager
-     usermod -p '$6$xyz$PcPt/h72LIQm.YoxBmDLqfpbX1w3vhcJ1LwyYjOaslRr67l0g3ZkE5nKN0c4Ed98wYTvMWvhlGcV7NZorCE2i/' manager
-     useradd contractor
-     usermod -p '$6$xyz$tlQI91A01E6TWfFL6jqBSSLdzLKJtFyF2aWfdTZyOBUn56UjQbMyecGla5IMGqX./neusxkBsr3IwUGZhTnel0' contractor
-     
-   SHELL
-   config.vm.provision "shell", path: "configure_mail_server.sh"
-   config.vm.provision "shell", inline: <<-SHELL
-    chmod 0600 /var/mail/*
-    systemctl enable --now postfix 
-    systemctl enable --now dovecot
-   SHELL
+#  Vagrant.configure("2") do |config|
+#    config.vm.provision "puppet" do |puppet|
+#      puppet.manifests_path = "manifests"
+#      puppet.manifest_file = "default.pp"
+#    end
+#  end
+  config.vm.provision "puppet install", type: "shell", inline: <<-SHELL
+    dnf -y install https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm
+    yum -y install puppet
+    yum -y install pdk
+	  /opt/puppetlabs/bin/puppet module install puppet-archive
+  SHELL
 end

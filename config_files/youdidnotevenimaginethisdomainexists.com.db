@@ -1,0 +1,16 @@
+$ORIGIN youdidnotevenimaginethisdomainexists.com.
+@                      3600 SOA   ns1.allinone-mh.localhost. (
+                              postmaster.allinone-mh.localhost.     ; address of responsible party
+                              2016072701                 ; serial number
+                              3600                       ; refresh period
+                              600                        ; retry period
+                              604800                     ; expire time
+                              1800                     ) ; minimum ttl
+                      86400 NS    ns1.p30.dynect.net.
+                      86400 NS    ns2.p30.dynect.net.
+                      86400 NS    ns3.p30.dynect.net.
+                      86400 NS    ns4.p30.dynect.net.
+                       3600 MX    10 mx1.allinone-mh.localhost.
+                       3600 MX    20 mx2.allinone-mh.localhost.
+                       3600 MX    30 mx3.allinone-mh.localhost.
+                         60 A     10.0.2.15
