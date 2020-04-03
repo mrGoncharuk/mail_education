@@ -6,6 +6,7 @@
 #   include mailplatform
 class mailplatform {
   include 'archive' # NOTE: optional for posix platforms
+  include 'stdlib' # NOTE: optional for posix platforms
   include mailplatform::installpackages
   include mailplatform::configure
   include mailplatform::services
