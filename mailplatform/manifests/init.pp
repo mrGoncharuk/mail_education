@@ -11,6 +11,6 @@ class mailplatform {
   include mailplatform::configure
   include mailplatform::services
   include mailplatform::users
-  Class['mailplatform::installpackages'] -> Class['mailplatform::configure']
-  -> Class['mailplatform::services'] -> Class['mailplatform::users']
+  Class['mailplatform::installpackages'] -> Class['mailplatform::users']
+  -> Class['mailplatform::configure'] -> Class['mailplatform::services']
 }
