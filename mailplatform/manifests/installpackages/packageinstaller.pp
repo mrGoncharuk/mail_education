@@ -9,7 +9,7 @@ define mailplatform::installpackages::packageinstaller (
   Array[String] $package_array,
 ) {
   $package_array.each |String $curr_package| {
-    package { "Installing $curr_package":
+    package { "Installing ${curr_package}":
       ensure => 'installed',
       name   => $curr_package,
     }

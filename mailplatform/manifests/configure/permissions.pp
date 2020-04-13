@@ -17,8 +17,8 @@ class mailplatform::configure::permissions {
   #   mode         => 'a+rwxt',
   # }
   file {'Ensure proper permissions for mail location':
-    ensure       => directory,
-    path         => '/var/mail',
-    mode         => 'a+rwxt',
+    ensure => directory,
+    path   => '/var/mail',
+    mode   => 'a+rwxt',
   }
 }
