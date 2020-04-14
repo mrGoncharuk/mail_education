@@ -93,8 +93,9 @@ Vagrant.configure("2") do |config|
     yum -y install puppet
     yum -y install pdk
 	/opt/puppetlabs/bin/puppet module install puppet-archive
-	/opt/puppetlabs/bin/puppet module install puppet-postfix_acl
-	/opt/puppetlabs/bin/puppet module install puppet-selinux_core
+	/opt/puppetlabs/bin/puppet module install puppet-posix_acl
+	/opt/puppetlabs/bin/puppet module install puppetlabs-selinux_core
 	/opt/puppetlabs/bin/puppet module install /vagrant/oleksandriegorov-mailplatform-0.1.0.tar.gz
+	/opt/puppetlabs/bin/puppet apply /vagrant/default.pp
   SHELL
 end
