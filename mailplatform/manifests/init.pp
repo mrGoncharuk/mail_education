@@ -5,12 +5,12 @@
 # @example
 #   include mailplatform
 class mailplatform {
-  include 'archive' # NOTE: optional for posix platforms
-  include 'stdlib' # NOTE: optional for posix platforms
-  include mailplatform::installpackages
-  include mailplatform::configure
-  include mailplatform::services
-  include mailplatform::users
+  require 'archive' # NOTE: optional for posix platforms
+  require 'stdlib' # NOTE: optional for posix platforms
+  contain mailplatform::installpackages
+  contain mailplatform::configure
+  contain mailplatform::services
+  contain mailplatform::users
   Class['mailplatform::installpackages'] -> Class['mailplatform::users']
   -> Class['mailplatform::configure'] -> Class['mailplatform::services']
 }

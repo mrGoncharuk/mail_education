@@ -8,7 +8,7 @@ class mailplatform::installpackages::rc_php {
   $package_php = ['php-ldap', 'php-imagick', 'php-mysql','php-common',
   'php-gd', 'php-imap', 'php-json', 'php-curl', 'php-zip', 'php-xml',
   'php-mbstring', 'php-bz2', 'php-intl', 'php-gmp']
-  include 'archive' # NOTE: optional for posix platforms
+  #include 'archive' # NOTE: optional for posix platforms
   # Creating RoundCube folder
   file { '/var/www':
     ensure  => 'directory',
