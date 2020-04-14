@@ -19,7 +19,8 @@ class mailplatform::configure::systems {
   }
   # setsebool -P httpd_can_network_connect 1
   selboolean { 'setting up httpd_can_network_connect to true':
-    name  => 'httpd_can_network_connect',
-    value => 'on',
+    name       => 'httpd_can_network_connect',
+    value      => 'on',
+    persistent => true,
   }
 }
