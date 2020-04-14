@@ -4,3 +4,8 @@
 fixtures:
   repositories:
     stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib"
+    archive: "git://github.com/voxpupuli/puppet-archive.git"
+    selinux_core:
+      repo: "https://github.com/puppetlabs/puppetlabs-selinux_core.git"
+      puppet_version: ">= 6.0.0"
+    posix_acl: "git://github.com/voxpupuli/puppet-posix_acl.git"

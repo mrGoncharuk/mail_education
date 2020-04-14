@@ -3,32 +3,31 @@
 # @summary A short summary of the purpose of this class
 #
 # @example
-#   include mailplatform::configure
+#   contain mailplatform::configure
 class mailplatform::configure {
 #1) hostname
-  include mailplatform::configure::hostnamechange
+  contain mailplatform::configure::hostnamechange
 #2) php file creation
-  include mailplatform::configure::php
+  contain mailplatform::configure::php
 #3) roundcube file creating and roundcube folder permissions 
-  include mailplatform::configure::roundcube
+  contain mailplatform::configure::roundcube
 #4) mysql configuring
-  include mailplatform::configure::mysql
+  contain mailplatform::configure::mysql
 #5) (was here: roundcube folder permissions) 
-  include mailplatform::configure::systems
+  contain mailplatform::configure::systems
 #6) Postfix  
-  include mailplatform::configure::postfix
+  contain mailplatform::configure::postfix
 #7) Dovecot  
-  include mailplatform::configure::dovecot
+  contain mailplatform::configure::dovecot
 #8) pdns-recursor config
-  include mailplatform::configure::pdns_recursor
+  contain mailplatform::configure::pdns_recursor
 #9) pdns config
-  include mailplatform::configure::pdns
+  contain mailplatform::configure::pdns
 #10) mailhome permissions
-  include mailplatform::configure::permissions
+  contain mailplatform::configure::permissions
 #11) Alias change
-  include mailplatform::configure::aliases
-  Class[mailplatform::users]
-  -> Class[mailplatform::configure::hostnamechange]
+  contain mailplatform::configure::aliases
+  Class[mailplatform::configure::hostnamechange]
   -> Class[mailplatform::configure::php]
   -> Class[mailplatform::configure::roundcube]
   -> Class[mailplatform::configure::mysql]

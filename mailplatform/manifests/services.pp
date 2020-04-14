@@ -17,11 +17,16 @@ class mailplatform::services {
 #      }
 #    }
 #  }
-
   $my_services = ['cockpit.socket', 'saslauthd.service', 'postfix', 'dovecot',
-  'pdns-recursor', 'mysqld', 'httpd', 'pdns', 'php-fpm'] #'mysqld', 'httpd',
-  mailplatform::services::restart_service_array {'Running all services':
-    service_array => $my_services,
+  'pdns-recursor', 'httpd', 'pdns', 'php-fpm'] #'mysqld', 'httpd',
+
+  service { $my_services:
+    ensure => true,
+    enable => true,
   }
+
+  #mailplatform::services::restart_service_array {'Running all services':
+  #  service_array => $my_services,
+  #}
 
 }

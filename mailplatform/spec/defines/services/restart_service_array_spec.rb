@@ -5,7 +5,9 @@ require 'spec_helper'
 describe 'mailplatform::services::restart_service_array' do
   let(:title) { 'namevar' }
   let(:params) do
-    {}
+    {
+      'service_array' => ['httpd','dovecot'],
+    }
   end
 
   on_supported_os.each do |os, os_facts|

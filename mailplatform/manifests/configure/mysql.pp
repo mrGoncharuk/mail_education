@@ -22,17 +22,17 @@ class mailplatform::configure::mysql {
       require => Service['mysqld'],
   }
   exec  {'db create user':
-      unless  => '/usr/bin/mysql -u roundcubeuser -p password',
+      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword',
       command => "/usr/bin/mysql -uroot  -e \"CREATE USER roundcubeuser@localhost IDENTIFIED BY 'password';\"",
       require => Exec['db create'],
   }
   exec { 'db grant privileges':
-      unless  => '/usr/bin/mysql -u roundcubeuser -p password roundcube',
+      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword roundcube',
       command => "/usr/bin/mysql -uroot  -e \"GRANT ALL PRIVILEGES ON roundcube.* TO roundcubeuser@localhost;\"",
       require => Exec['db create user'],
       }
   exec { 'db flush privileges':
-      unless  => '/usr/bin/mysql -u roundcubeuser -p password roundcube',
+      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword roundcube',
       command => "/usr/bin/mysql -uroot  -e \"flush privileges;\"",
       require => Exec['db grant privileges'],
       }
