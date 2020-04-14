@@ -32,13 +32,17 @@ class mailplatform::installpackages::rc_php {
   }
 
   # Php installing
-  exec { 'Remi Repo':
-    command => '/usr/bin/dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm',
+  package { 'Remi Repo':
+    ensure => present,
+    source => 'https://rpms.remirepo.net/enterprise/remi-release-8.rpm',
   }
+#  exec { 'Remi Repo':
+#    command => '/usr/bin/dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm',
+#  }
 
   exec { 'module reset php':
     command => '/usr/bin/dnf -y module reset php',
-    require => Exec['Remi Repo'],
+    require => Package['Remi Repo'],
   }
 
   exec { 'module enable php':
