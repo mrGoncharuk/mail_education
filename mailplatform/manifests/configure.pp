@@ -27,8 +27,7 @@ class mailplatform::configure {
   contain mailplatform::configure::permissions
 #11) Alias change
   contain mailplatform::configure::aliases
-  Class[mailplatform::users]
-  -> Class[mailplatform::configure::hostnamechange]
+  Class[mailplatform::configure::hostnamechange]
   -> Class[mailplatform::configure::php]
   -> Class[mailplatform::configure::roundcube]
   -> Class[mailplatform::configure::mysql]

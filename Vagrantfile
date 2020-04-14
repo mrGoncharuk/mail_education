@@ -92,6 +92,9 @@ Vagrant.configure("2") do |config|
     dnf -y install https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm
     yum -y install puppet
     yum -y install pdk
-	  /opt/puppetlabs/bin/puppet module install puppet-archive
+	/opt/puppetlabs/bin/puppet module install puppet-archive
+	/opt/puppetlabs/bin/puppet module install puppet-postfix_acl
+	/opt/puppetlabs/bin/puppet module install puppet-selinux_core
+	/opt/puppetlabs/bin/puppet module install /vagrant/oleksandriegorov-mailplatform-0.1.0.tar.gz
   SHELL
 end

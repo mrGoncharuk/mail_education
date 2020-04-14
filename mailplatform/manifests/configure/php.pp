@@ -70,13 +70,13 @@ class mailplatform::configure::php {
   "
   file { '/var/www/roundcube/config/config.inc.php':
     content => $str,
-    notify  => Service['httpd'],
+#   notify  => Service['httpd'],
   }
-  service {'httpd':
-    ensure => running,
-    enable => true,
-  }
-  # Setting up Timezone for PHP
+# service {'httpd':
+#   ensure => running,
+#   enable => true,
+# }
+# Setting up Timezone for PHP
   file_line {'Setting up Timezone for PHP':
     path  => '/etc/php.ini',
     line  => "date.timezone = ${php_timezone}",

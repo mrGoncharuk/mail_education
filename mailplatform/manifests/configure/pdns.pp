@@ -14,9 +14,9 @@ class mailplatform::configure::pdns {
     source => 'puppet:///modules/mailplatform/named.conf',
   }
   file { '/var/lib/pdns/youdidnotevenimaginethisdomainexists.com.db':
-    ensure   => present,
-    source   => 'puppet:///modules/mailplatform/youdidnotevenimaginethisdomainexists.com.db',
-    requires => File['/var/lib/pdns'],
+    ensure  => present,
+    source  => 'puppet:///modules/mailplatform/youdidnotevenimaginethisdomainexists.com.db',
+    require => File['/var/lib/pdns'],
   }
 
 #  file_line {'Uncomment local-port at pdns config file and changing port value to 54':
