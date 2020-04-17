@@ -9,9 +9,13 @@
 # @example
 #   include mailplatform::configure::mysql
 
-class mailplatform::configure::mysql {
+class mailplatform::configure::mysql (
+  String $password = $mailplatform::configure_mysql_rc_pass,
+)
+{
   # Create a MySQL Database and User for Roundcube
   #  systemctl start mysqld
+  $roundcube_mysql_password = $password
   service { 'mysqld':
     ensure => running,
     enable => true,
@@ -22,17 +26,17 @@ class mailplatform::configure::mysql {
       require => Service['mysqld'],
   }
   exec  {'db create user':
-      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword',
-      command => "/usr/bin/mysql -uroot  -e \"CREATE USER roundcubeuser@localhost IDENTIFIED BY 'password';\"",
+      unless  => "/usr/bin/mysql -u roundcubeuser -p${roundcube_mysql_password}",
+      command => "/usr/bin/mysql -uroot  -e \"CREATE USER roundcubeuser@localhost IDENTIFIED BY '${roundcube_mysql_password}';\"",
       require => Exec['db create'],
   }
   exec { 'db grant privileges':
-      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword roundcube',
+      unless  => "/usr/bin/mysql -u roundcubeuser -p${roundcube_mysql_password} roundcube",
       command => "/usr/bin/mysql -uroot  -e \"GRANT ALL PRIVILEGES ON roundcube.* TO roundcubeuser@localhost;\"",
       require => Exec['db create user'],
       }
   exec { 'db flush privileges':
-      unless  => '/usr/bin/mysql -u roundcubeuser -ppassword roundcube',
+      unless  => "/usr/bin/mysql -u roundcubeuser -p${roundcube_mysql_password} roundcube",
       command => "/usr/bin/mysql -uroot  -e \"flush privileges;\"",
       require => Exec['db grant privileges'],
       }
@@ -43,3 +47,7 @@ class mailplatform::configure::mysql {
   }
 
 }
+
+#class { 'mailplatform::configure::mysql':
+#  password => 'temp123',
+#}

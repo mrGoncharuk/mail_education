@@ -4,7 +4,9 @@
 #
 # @example
 #   include mailplatform
-class mailplatform {
+class mailplatform (
+  String $configure_mysql_rc_pass = password,
+){
   require 'archive' # NOTE: optional for posix platforms
   require 'stdlib' # NOTE: optional for posix platforms
   include mailplatform::installpackages
